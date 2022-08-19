@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_activity_nav"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.ugurcangal.kisilerapp.ui.fragment.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_personDetailsFragment"
+            app:destination="@id/personDetailsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_personRegFragment"
+            app:destination="@id/personRegFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/personRegFragment"
+        android:name="com.ugurcangal.kisilerapp.ui.fragment.PersonRegFragment"
+        android:label="fragment_person_reg"
+        tools:layout="@layout/fragment_person_reg" />
+    <fragment
+        android:id="@+id/personDetailsFragment"
+        android:name="com.ugurcangal.kisilerapp.ui.fragment.PersonDetailsFragment"
+        android:label="fragment_person_details"
+        tools:layout="@layout/fragment_person_details" >
+        <argument
+            android:name="kisi"
+            app:argType="com.ugurcangal.kisilerapp.data.entity.Kisiler" />
+    </fragment>
+</navigation>
