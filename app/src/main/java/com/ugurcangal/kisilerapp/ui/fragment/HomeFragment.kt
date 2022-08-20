@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,11 +16,21 @@ import com.ugurcangal.kisilerapp.R
 import com.ugurcangal.kisilerapp.data.entity.Kisiler
 import com.ugurcangal.kisilerapp.databinding.FragmentHomeBinding
 import com.ugurcangal.kisilerapp.ui.adapter.KisilerAdapter
+import com.ugurcangal.kisilerapp.ui.viewmodel.HomeViewModel
+import com.ugurcangal.kisilerapp.util.gecisYap
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() , androidx.appcompat.widget.SearchView.OnQueryTextListener{
     private lateinit var binding : FragmentHomeBinding
+    private lateinit var viewModel : HomeViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val tempViewModel : HomeViewModel by viewModels()
+        viewModel = tempViewModel
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,16 +43,11 @@ class HomeFragment : Fragment() , androidx.appcompat.widget.SearchView.OnQueryTe
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbarHome)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val kisilerListesi = ArrayList<Kisiler>()
-        val k1 = Kisiler(1,"Ugur","11111")
-        val k2 = Kisiler(2,"belinay","22222")
-        val k3 = Kisiler(3,"Mert","33333")
-        kisilerListesi.add(k1)
-        kisilerListesi.add(k2)
-        kisilerListesi.add(k3)
 
-        val adapter = KisilerAdapter(requireContext(),kisilerListesi)
-        binding.kisilerAdapter = adapter
+        viewModel.kisilerListesi.observe(viewLifecycleOwner){
+            val adapter = KisilerAdapter(requireContext(),it,viewModel)
+            binding.kisilerAdapter = adapter
+        }
 
 
         requireActivity().addMenuProvider(object : MenuProvider{
@@ -63,26 +69,23 @@ class HomeFragment : Fragment() , androidx.appcompat.widget.SearchView.OnQueryTe
     }
 
     fun fabTikla(view:View){
-        Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_personRegFragment)
+        Navigation.gecisYap(view, R.id.action_homeFragment_to_personRegFragment)
     }
 
     override fun onQueryTextSubmit(p0: String?): Boolean {
-        search(p0!!)
+        viewModel.search(p0!!)
         return true
     }
 
     override fun onQueryTextChange(p0: String?): Boolean {
-        search(p0!!)
+        viewModel.search(p0!!)
         return true
     }
 
-    fun search(searchWord : String){
-        Log.e("Kişi Ara", searchWord)
-    }
 
     override fun onResume() {
         super.onResume()
-        Log.e("Kişi Anasayfa", "Dönüldü")
+        viewModel.kisileriYukle()
     }
 
 }

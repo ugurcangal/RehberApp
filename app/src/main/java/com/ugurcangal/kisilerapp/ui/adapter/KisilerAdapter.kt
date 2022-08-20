@@ -12,8 +12,13 @@ import com.ugurcangal.kisilerapp.R
 import com.ugurcangal.kisilerapp.data.entity.Kisiler
 import com.ugurcangal.kisilerapp.databinding.CardDesignBinding
 import com.ugurcangal.kisilerapp.ui.fragment.HomeFragmentDirections
+import com.ugurcangal.kisilerapp.ui.viewmodel.HomeViewModel
+import com.ugurcangal.kisilerapp.util.gecisYap
 
-class KisilerAdapter(var mContext: Context , var kisilerListesi : List<Kisiler>) :
+class KisilerAdapter(
+    var mContext: Context ,
+    var kisilerListesi : List<Kisiler>,
+    var viewModel : HomeViewModel) :
     RecyclerView.Adapter<KisilerAdapter.CardTasarimHolder>() {
 
     inner class CardTasarimHolder(binding : CardDesignBinding) : RecyclerView.ViewHolder(binding.root){
@@ -35,13 +40,13 @@ class KisilerAdapter(var mContext: Context , var kisilerListesi : List<Kisiler>)
         holder.binding.kisiNesnesi = kisi
         holder.itemView.setOnClickListener {
             val gecis = HomeFragmentDirections.actionHomeFragmentToPersonDetailsFragment(kisi)
-            Navigation.findNavController(it).navigate(gecis)
+            Navigation.gecisYap(it,gecis)
         }
 
         holder.binding.imageViewDelete.setOnClickListener {
             Snackbar.make(it,"${kisi.kisiAd} Silinsin mi?",Snackbar.LENGTH_LONG)
                 .setAction("Evet"){
-                    Log.e("Kişi Sil",kisi.kisiId.toString())
+                    viewModel.sil(kisi.kisiId)
                 }.show()
         }
 
